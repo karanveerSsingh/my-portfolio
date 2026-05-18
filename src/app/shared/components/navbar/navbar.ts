@@ -1,5 +1,5 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, HostListener, effect, inject, signal, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ThemeService } from '../../../core/theme.service';
 
 @Component({
@@ -11,8 +11,18 @@ import { ThemeService } from '../../../core/theme.service';
 })
 export class NavbarComponent {
   themeSvc = inject(ThemeService);
+  private platformId = inject(PLATFORM_ID);
   scrolled = signal(false);
   menuOpen = signal(false);
+
+  constructor() {
+    // Lock body scroll when mobile menu is open
+    effect(() => {
+      const open = this.menuOpen();
+      if (!isPlatformBrowser(this.platformId)) return;
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+  }
 
   links = [
     { id: 'home', label: 'Home' },

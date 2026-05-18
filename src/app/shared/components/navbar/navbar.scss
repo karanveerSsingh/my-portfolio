@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   right: 0;
-  z-index: 100;
+  z-index: 110;
   padding: 14px 0;
   transition: all 0.35s ease;
   background: transparent;
@@ -141,31 +141,64 @@
   }
 }
 
+/* Backdrop overlay behind mobile drawer */
+.nav-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.55);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+  z-index: 100; // below navbar (110), above page content
+}
+.nav-backdrop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 @media (max-width: 900px) {
   .nav-links {
     position: fixed;
     top: 0;
     right: -100%;
     flex-direction: column;
-    justify-content: center;
-    width: 80%;
-    max-width: 320px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 82%;
+    max-width: 340px;
     height: 100vh;
+    height: 100dvh; // proper mobile viewport
     background: var(--bg-elev);
     border-left: 1px solid var(--card-border);
-    padding: 80px 32px;
-    gap: 24px;
-    transition: right 0.4s ease;
+    padding: 90px 28px 28px;
+    gap: 22px;
+    transition: right 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    z-index: 105; // above backdrop (100), below navbar (110)
+    box-shadow: -20px 0 50px rgba(0, 0, 0, 0.25);
+    overflow-y: auto;
 
     &.open {
       right: 0;
     }
 
     a {
-      font-size: 18px;
+      font-size: 17px;
+      width: 100%;
+      padding: 10px 0;
+    }
+
+    .nav-cta {
+      width: 100%;
+      justify-content: center;
+      margin-top: 8px;
     }
   }
+
   .hamburger {
     display: inline-flex;
+    position: relative;
+    z-index: 120; // always on top so close-X stays clickable
   }
 }

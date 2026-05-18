@@ -1,4 +1,4 @@
-<header class="navbar" [class.scrolled]="scrolled()">
+<header class="navbar" [class.scrolled]="scrolled()" [class.menu-open]="menuOpen()">
   <div class="container nav-inner">
     <a class="brand" (click)="scrollTo('home')">
       <span class="logo-dot"></span>
@@ -26,10 +26,15 @@
         class="icon-btn hamburger"
         (click)="toggleMenu()"
         [class.active]="menuOpen()"
-        aria-label="Menu"
+        [attr.aria-label]="menuOpen() ? 'Close menu' : 'Open menu'"
+        [attr.title]="menuOpen() ? 'Close menu' : 'Open menu'"
+        [attr.aria-expanded]="menuOpen()"
       >
         <span></span><span></span><span></span>
       </button>
     </div>
   </div>
 </header>
+
+<div class="nav-backdrop" [class.show]="menuOpen()" (click)="closeMenu()" aria-hidden="true"></div>
+
