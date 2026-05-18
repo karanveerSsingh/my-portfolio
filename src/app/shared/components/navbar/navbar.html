@@ -23,14 +23,19 @@
         }
       </button>
       <button
-        class="icon-btn hamburger"
+        type="button"
+        class="hamburger"
         (click)="toggleMenu()"
         [class.active]="menuOpen()"
         [attr.aria-label]="menuOpen() ? 'Close menu' : 'Open menu'"
         [attr.title]="menuOpen() ? 'Close menu' : 'Open menu'"
         [attr.aria-expanded]="menuOpen()"
       >
-        <span></span><span></span><span></span>
+        @if (menuOpen()) {
+          <i class="fa-solid fa-xmark"></i>
+        } @else {
+          <i class="fa-solid fa-bars"></i>
+        }
       </button>
     </div>
   </div>
