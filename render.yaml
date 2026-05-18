@@ -1,0 +1,32 @@
+# Render Static Site config
+# Auto-deploys this Angular project. Render reads this on every push to main.
+services:
+  - type: web
+    name: karanveer-portfolio
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist/portfolio/browser
+    pullRequestPreviewsEnabled: true
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*.css
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+      - path: /*.js
+        name: Cache-Control
+        value: public, max-age=31536000, immutable
+    routes:
+      # SPA fallback — every unknown route should serve index.html
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_VERSION
+        value: 20.19.6
+      - key: NPM_VERSION
+        value: 10.8.2

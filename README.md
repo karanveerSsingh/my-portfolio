@@ -1,59 +1,103 @@
-# Portfolio
+# Karanveer Singh — Frontend Developer Portfolio
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.2.11.
+Modern, animated, fully responsive portfolio built with **Angular 21**, **SCSS**, and Angular signals.
 
-## Development server
+🔗 **Live:** _coming soon (Render)_
+👤 **GitHub:** [@karanveerSsingh](https://github.com/karanveerSsingh)
+📧 **Email:** karanveer0508singh@gmail.com
 
-To start a local development server, run:
+---
 
-```bash
-ng serve
-```
+## ✨ Features
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Angular 21 standalone components + signals + new control flow (`@for` / `@if`)
+- Lazy-loaded home route
+- Dark / light theme toggle (system-aware, persisted)
+- Hero with typing effect, particles, orbiting tech icons, floating code card
+- About, Skills (animated progress bars), Stats (animated counters)
+- Projects with category filtering (CRM, Dashboards, Web Apps)
+- Animated experience timeline
+- Services, Testimonials carousel
+- Contact form with Reactive Forms validation
+- Sticky navbar, scroll-to-top button, scroll-reveal animations
+- Resume PDF download
+- Mobile-first responsive, SEO-friendly meta tags
 
-## Code scaffolding
+---
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🛠 Tech Stack
 
-```bash
-ng generate component component-name
-```
+Angular 21 · TypeScript · SCSS · RxJS · Reactive Forms · Font Awesome · Google Fonts (Inter, JetBrains Mono)
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+## 🚀 Local development
 
 ```bash
-ng test
+npm install
+npm start
+# → http://localhost:4200
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+## 📦 Production build
 
 ```bash
-ng e2e
+npm run build
+# Output: dist/portfolio/browser/
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+---
 
-## Additional Resources
+## ☁️ Deploying to Render
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+This repo includes [`render.yaml`](./render.yaml) for one-click deploys.
+
+### Option A — Blueprint (recommended)
+1. Push this repo to GitHub
+2. Go to <https://dashboard.render.com/blueprints>
+3. Click **New Blueprint Instance** → connect this repo
+4. Render will detect `render.yaml` and deploy automatically
+
+### Option B — Manual Static Site
+1. <https://dashboard.render.com> → **New** → **Static Site**
+2. Connect this repo
+3. Use these settings:
+   - **Build Command:** `npm install && npm run build`
+   - **Publish Directory:** `dist/portfolio/browser`
+   - **Node Version:** 20.19.6 (set in env vars)
+4. Add a **Rewrite Rule** (for SPA routing):
+   - Source: `/*`
+   - Destination: `/index.html`
+   - Action: Rewrite
+
+The included `public/_redirects` file also handles SPA fallback automatically.
+
+---
+
+## 📂 Project Structure
+
+```
+src/
+├── app/
+│   ├── core/                      # ThemeService
+│   ├── shared/
+│   │   ├── components/            # navbar, footer, scroll-top
+│   │   └── directives/            # reveal.directive
+│   └── features/
+│       └── home/
+│           └── sections/          # hero, about, skills, projects,
+│                                  # experience, services, stats,
+│                                  # testimonials, contact
+├── styles.scss                    # global styles + theme variables
+└── index.html
+public/
+├── assets/
+│   └── resume.pdf                 # downloadable resume
+└── _redirects                     # SPA fallback for Render/Netlify
+```
+
+---
+
+## 📝 License
+
+MIT © Karanveer Singh
