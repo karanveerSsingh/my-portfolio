@@ -1,0 +1,35 @@
+<header class="navbar" [class.scrolled]="scrolled()">
+  <div class="container nav-inner">
+    <a class="brand" (click)="scrollTo('home')">
+      <span class="logo-dot"></span>
+      <span>Karanveer<strong>.dev</strong></span>
+    </a>
+
+    <nav class="nav-links" [class.open]="menuOpen()">
+      @for (link of links; track link.id) {
+        <a (click)="scrollTo(link.id)">{{ link.label }}</a>
+      }
+      <button class="btn btn-primary nav-cta" (click)="scrollTo('contact')">
+        <i class="fa-solid fa-paper-plane"></i> Hire Me
+      </button>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="icon-btn" (click)="toggleTheme()" [attr.aria-label]="'Toggle theme'">
+        @if (themeSvc.theme() === 'dark') {
+          <i class="fa-solid fa-sun"></i>
+        } @else {
+          <i class="fa-solid fa-moon"></i>
+        }
+      </button>
+      <button
+        class="icon-btn hamburger"
+        (click)="toggleMenu()"
+        [class.active]="menuOpen()"
+        aria-label="Menu"
+      >
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>

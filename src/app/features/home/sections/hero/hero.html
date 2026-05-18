@@ -1,0 +1,101 @@
+<section class="hero">
+  <div class="bg-shapes">
+    <span class="shape shape-1"></span>
+    <span class="shape shape-2"></span>
+    <span class="shape shape-3"></span>
+  </div>
+
+  <div class="particles">
+    @for (i of dots; track i) {
+      <span></span>
+    }
+  </div>
+
+  <div class="container hero-inner">
+    <div class="hero-text">
+      <span class="badge">
+        <span class="pulse"></span> Available for freelance &amp; full-time
+      </span>
+      <h1>Hi, I'm <span class="gradient-text">Karanveer Singh</span></h1>
+      <h2 class="role-line">
+        I'm a <span class="typed">{{ typed() }}</span
+        ><span class="caret">|</span>
+      </h2>
+      <p class="lead">
+        Results-driven Frontend Developer with 1.5+ years of experience building scalable,
+        production-ready Angular applications. I've architected CRM platforms and data-intensive
+        dashboards for Maruti Suzuki — turning complex requirements into clean, performant UIs.
+      </p>
+
+      <div class="hero-cta">
+        <button class="btn btn-primary" (click)="downloadResume()">
+          <i class="fa-solid fa-download"></i> Download Resume
+        </button>
+        <button class="btn" (click)="scrollToContact()">
+          <i class="fa-solid fa-envelope"></i> Contact Me
+        </button>
+      </div>
+
+      <div class="hero-socials">
+        <a
+          href="https://github.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="GitHub"
+          title="GitHub"
+          ><i class="fa-brands fa-github"></i
+        ></a>
+        <a
+          href="https://linkedin.com/in/karanveer-singh"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="LinkedIn"
+          title="LinkedIn"
+          ><i class="fa-brands fa-linkedin-in"></i
+        ></a>
+        <a
+          href="https://twitter.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Twitter"
+          title="Twitter"
+          ><i class="fa-brands fa-x-twitter"></i
+        ></a>
+        <a href="mailto:karanveer0508singh@gmail.com" aria-label="Email" title="Email"
+          ><i class="fa-solid fa-envelope"></i
+        ></a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="avatar-ring">
+        <div class="avatar">
+          <i class="fa-solid fa-code"></i>
+        </div>
+        <div class="orbit orbit-1">
+          <span><i class="fa-brands fa-angular"></i></span>
+        </div>
+        <div class="orbit orbit-2">
+          <span><i class="fa-brands fa-react"></i></span>
+        </div>
+        <div class="orbit orbit-3">
+          <span><i class="fa-brands fa-js"></i></span>
+        </div>
+      </div>
+
+      <div class="floating-card card">
+        <div class="dots"><i></i><i></i><i></i></div>
+        <pre><code><span class="key">const</span> dev = &#123;
+  <span class="prop">name</span>: <span class="str">'Karanveer Singh'</span>,
+  <span class="prop">stack</span>: [<span class="str">'Angular'</span>, <span class="str">'TS'</span>],
+  <span class="prop">passion</span>: <span class="str">'Clean UI'</span>,
+&#125;;</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span></span>
+    <p>Scroll</p>
+  </div>
+</section>
