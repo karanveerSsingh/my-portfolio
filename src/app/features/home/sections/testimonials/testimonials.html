@@ -1,0 +1,170 @@
+<section class="testimonials">
+  <div class="container">
+    <div class="section-title" appReveal>
+      <span class="eyebrow">Testimonials</span>
+      <h2>What People Say</h2>
+      <p>Feedback from clients and colleagues I've worked with.</p>
+    </div>
+
+    <div class="t-stage" appReveal>
+      @for (t of testimonials; track t.name; let i = $index) {
+        <div class="t-card" [class.active]="i === active()">
+          <i class="fa-solid fa-quote-left quote"></i>
+          <p>"{{ t.quote }}"</p>
+          <div class="author">
+            <div class="avatar"><i [class]="t.icon"></i></div>
+            <div>
+              <h4>{{ t.name }}</h4>
+              <small>{{ t.role }}</small>
+            </div>
+          </div>
+        </div>
+      }
+
+      <div class="controls">
+        <button (click)="prev()" aria-label="Previous">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <div class="dots">
+          @for (t of testimonials; track t.name; let i = $index) {
+            <span [class.active]="i === active()" (click)="active.set(i)"></span>
+          }
+        </div>
+        <button (click)="next()" aria-label="Next">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Visitor comment form -->
+    <div class="comment-form-wrap" appReveal>
+      <div class="comment-form">
+        <div class="cf-header">
+          <i class="fa-solid fa-comment-dots cf-icon"></i>
+          <div>
+            <h3>Leave a Comment</h3>
+            <p>
+              Worked with me, or just visiting? Drop your honest feedback — it shows up below
+              instantly.
+            </p>
+          </div>
+        </div>
+
+        <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+          <div class="grid">
+            <div class="field">
+              <label for="c-name">Your Name *</label>
+              <input
+                id="c-name"
+                type="text"
+                formControlName="name"
+                placeholder="John Doe"
+                autocomplete="name"
+              />
+              @if (showErr('name')) {
+                <small class="err">Please enter your name.</small>
+              }
+            </div>
+            <div class="field">
+              <label for="c-role">Role / Company (optional)</label>
+              <input
+                id="c-role"
+                type="text"
+                formControlName="role"
+                placeholder="Designer at Acme Co."
+                autocomplete="organization"
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <label>Rating</label>
+            <div class="stars" role="radiogroup" aria-label="Rating">
+              @for (s of starList; track s) {
+                <button
+                  type="button"
+                  class="star"
+                  [class.filled]="s <= rating()"
+                  (click)="rating.set(s)"
+                  [attr.aria-label]="s + ' stars'"
+                >
+                  <i class="fa-solid fa-star"></i>
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="c-msg">Comment *</label>
+            <textarea
+              id="c-msg"
+              rows="4"
+              formControlName="message"
+              placeholder="Share your thoughts about my work, this portfolio, or anything else..."
+            ></textarea>
+            @if (showErr('message')) {
+              <small class="err"> Comment must be at least 10 characters. </small>
+            }
+          </div>
+
+          <div class="cf-actions">
+            <button type="submit" class="btn-primary">
+              <i class="fa-solid fa-paper-plane"></i>
+              Post Comment
+            </button>
+            @if (submitted()) {
+              <span class="success">
+                <i class="fa-solid fa-circle-check"></i>
+                Thanks! Your comment is posted below.
+              </span>
+            }
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Visitor comments wall -->
+    @if (visitorComments().length) {
+      <div class="wall-head" appReveal>
+        <h3>
+          <i class="fa-solid fa-users"></i>
+          Visitor Comments
+          <span class="count">{{ visitorComments().length }}</span>
+        </h3>
+        <small>Saved locally in your browser.</small>
+      </div>
+
+      <div class="wall" appReveal>
+        @for (c of visitorComments(); track c.id) {
+          <article class="v-card">
+            <header>
+              <div class="v-avatar">{{ initials(c.name) }}</div>
+              <div class="v-meta">
+                <h4>{{ c.name }}</h4>
+                @if (c.role) {
+                  <small>{{ c.role }}</small>
+                }
+              </div>
+              <button
+                class="del"
+                type="button"
+                (click)="remove(c.id)"
+                aria-label="Delete comment"
+                title="Delete"
+              >
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </header>
+            <div class="v-stars">
+              @for (s of starList; track s) {
+                <i class="fa-solid fa-star" [class.on]="s <= c.rating"></i>
+              }
+            </div>
+            <p>{{ c.message }}</p>
+            <time>{{ formatDate(c.createdAt) }}</time>
+          </article>
+        }
+      </div>
+    }
+  </div>
+</section>

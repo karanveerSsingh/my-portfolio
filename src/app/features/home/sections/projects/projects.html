@@ -1,0 +1,72 @@
+<section class="projects">
+  <div class="container">
+    <div class="section-title" appReveal>
+      <span class="eyebrow">Portfolio</span>
+      <h2>Featured Projects</h2>
+      <p>A selection of recent projects showcasing frontend craftsmanship.</p>
+    </div>
+
+    <div class="filters" appReveal>
+      @for (f of filters; track f.id) {
+        <button
+          class="filter-btn"
+          [class.active]="activeFilter() === f.id"
+          (click)="setFilter(f.id)"
+        >
+          {{ f.label }}
+        </button>
+      }
+    </div>
+
+    <div class="projects-grid">
+      @for (p of visible(); track p.title; let i = $index) {
+        <article class="project-card" appReveal [revealDelay]="i * 80">
+          <div
+            class="thumb"
+            [style.background]="'linear-gradient(135deg,' + p.colors[0] + ',' + p.colors[1] + ')'"
+          >
+            <i [class]="p.icon"></i>
+            <div class="overlay">
+              <a
+                [href]="p.live"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Live Demo"
+                title="Live Demo"
+              >
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              </a>
+              <a
+                [href]="p.github"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="GitHub"
+                title="GitHub"
+              >
+                <i class="fa-brands fa-github"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="body">
+            <h4>{{ p.title }}</h4>
+            <p>{{ p.description }}</p>
+            <div class="tags">
+              @for (t of p.tags; track t) {
+                <span>{{ t }}</span>
+              }
+            </div>
+            <div class="actions">
+              <a class="btn btn-primary" [href]="p.live" target="_blank" rel="noopener noreferrer">
+                <i class="fa-solid fa-play"></i> Live Demo
+              </a>
+              <a class="btn" [href]="p.github" target="_blank" rel="noopener noreferrer">
+                <i class="fa-brands fa-github"></i> Code
+              </a>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>

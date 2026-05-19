@@ -1,0 +1,31 @@
+<section class="skills" #host>
+  <div class="container">
+    <div class="section-title" appReveal>
+      <span class="eyebrow">My Skills</span>
+      <h2>Technologies I work with</h2>
+      <p>A mix of frameworks, languages, and tools I use daily to build modern web apps.</p>
+    </div>
+
+    <div class="skills-grid">
+      @for (skill of skills; track skill.name; let i = $index) {
+        <div class="skill-card" appReveal [revealDelay]="i * 60">
+          <div class="skill-head">
+            <span class="icon" [style.color]="skill.color">
+              <i [class]="skill.icon"></i>
+            </span>
+            <div>
+              <h4>{{ skill.name }}</h4>
+              <small>{{ skill.level }}%</small>
+            </div>
+          </div>
+          <div class="bar">
+            <span
+              [style.width.%]="animated() ? skill.level : 0"
+              [style.background]="'linear-gradient(90deg,' + skill.color + ', var(--primary-2))'"
+            ></span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

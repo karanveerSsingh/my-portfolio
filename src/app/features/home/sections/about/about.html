@@ -1,0 +1,62 @@
+<section class="about">
+  <div class="container">
+    <div class="section-title" appReveal>
+      <span class="eyebrow">About Me</span>
+      <h2>Crafting interfaces with purpose</h2>
+      <p>Get to know the engineer behind the code.</p>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-visual" appReveal>
+        <div class="photo-wrap">
+          <div class="photo"><i class="fa-solid fa-user-astronaut"></i></div>
+          <div class="exp-badge">
+            <strong>1.5</strong>
+            <span>Years of<br />Experience</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-content" appReveal [revealDelay]="120">
+        <h3>Frontend Developer based in Jaipur, India</h3>
+        <p>
+          I'm <strong>Karanveer Singh</strong>, a results-driven Frontend Developer with over
+          <strong>1.5 years</strong> of hands-on experience delivering scalable, production-ready
+          web applications using <strong>Angular</strong>. I've built CRM platforms and
+          data-intensive dashboards for <strong>Maruti Suzuki</strong>, now actively used across
+          dealerships.
+        </p>
+        <p>
+          I specialize in RESTful API integration, responsive UI design, and reusable component
+          architecture. I'm adept at collaborating with cross-functional teams to translate complex
+          requirements into performant, user-centric features on time.
+        </p>
+
+        <div class="about-meta">
+          <div>
+            <i class="fa-solid fa-location-dot"></i>
+            <span><b>Location</b> Jaipur, India</span>
+          </div>
+          <div>
+            <i class="fa-solid fa-envelope"></i>
+            <span><b>Email</b> karanveer0508singh&#64;gmail.com</span>
+          </div>
+          <div>
+            <i class="fa-solid fa-phone"></i>
+            <span><b>Phone</b> +91-8005942278</span>
+          </div>
+          <div>
+            <i class="fa-solid fa-graduation-cap"></i>
+            <span><b>Education</b> B.A., SS Jain Subodh PG College</span>
+          </div>
+        </div>
+
+        <div class="tech-pills">
+          @for (tech of techPills; track tech) {
+            <span>{{ tech }}</span>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,30 @@
+<section class="experience">
+  <div class="container">
+    <div class="section-title" appReveal>
+      <span class="eyebrow">Experience</span>
+      <h2>My Professional Journey</h2>
+      <p>
+        1.5+ years of frontend development, building production CRMs and dashboards for Maruti
+        Suzuki.
+      </p>
+    </div>
+
+    <div class="timeline">
+      @for (item of items; track item.company; let i = $index) {
+        <div class="t-item" [class.right]="i % 2 === 1" appReveal [revealDelay]="i * 100">
+          <div class="t-dot"><i [class]="item.icon"></i></div>
+          <div class="t-card card">
+            <span class="period"> <i class="fa-regular fa-calendar"></i> {{ item.period }} </span>
+            <h4>{{ item.role }}</h4>
+            <p class="company"><i class="fa-solid fa-building"></i> {{ item.company }}</p>
+            <ul>
+              @for (r of item.responsibilities; track r) {
+                <li><i class="fa-solid fa-check"></i> {{ r }}</li>
+              }
+            </ul>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,13 @@
+<section class="stats" #host>
+  <div class="container">
+    <div class="stats-grid">
+      @for (s of stats; track s.label; let i = $index) {
+        <div class="stat-card">
+          <div class="icon"><i [class]="s.icon"></i></div>
+          <div class="value">{{ counts()[i] }}{{ s.suffix || '' }}</div>
+          <div class="label">{{ s.label }}</div>
+        </div>
+      }
+    </div>
+  </div>
+</section>

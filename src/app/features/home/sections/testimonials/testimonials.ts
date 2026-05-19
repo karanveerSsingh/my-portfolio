@@ -1,5 +1,13 @@
-import { Component, OnDestroy, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+  inject,
+  signal,
+} from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RevealDirective } from '../../../../shared/directives/reveal.directive';
 
 interface Testimonial {
@@ -9,165 +17,47 @@ interface Testimonial {
   icon: string;
 }
 
+interface VisitorComment {
+  id: string;
+  name: string;
+  role: string;
+  message: string;
+  rating: number;
+  createdAt: number;
+}
+
+const STORAGE_KEY = 'kv_visitor_comments_v1';
+const AUTOPLAY_MS = 6000;
+const SUCCESS_MS = 4000;
+
 @Component({
   selector: 'app-testimonials',
   standalone: true,
-  imports: [CommonModule, RevealDirective],
-  template: `
-    <section class="testimonials">
-      <div class="container">
-        <div class="section-title" appReveal>
-          <span class="eyebrow">Testimonials</span>
-          <h2>What People Say</h2>
-          <p>Feedback from clients and colleagues I've worked with.</p>
-        </div>
-
-        <div class="t-stage" appReveal>
-          @for (t of testimonials; track t.name; let i = $index) {
-            <div class="t-card" [class.active]="i === active()">
-              <i class="fa-solid fa-quote-left quote"></i>
-              <p>"{{ t.quote }}"</p>
-              <div class="author">
-                <div class="avatar"><i [class]="t.icon"></i></div>
-                <div>
-                  <h4>{{ t.name }}</h4>
-                  <small>{{ t.role }}</small>
-                </div>
-              </div>
-            </div>
-          }
-
-          <div class="controls">
-            <button (click)="prev()" aria-label="Previous">
-              <i class="fa-solid fa-chevron-left"></i>
-            </button>
-            <div class="dots">
-              @for (t of testimonials; track t.name; let i = $index) {
-                <span [class.active]="i === active()" (click)="active.set(i)"></span>
-              }
-            </div>
-            <button (click)="next()" aria-label="Next">
-              <i class="fa-solid fa-chevron-right"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    </section>
-  `,
-  styles: [
-    `
-      .t-stage {
-        position: relative;
-        max-width: 760px;
-        margin: 0 auto;
-      }
-      .t-card {
-        position: absolute;
-        inset: 0;
-        padding: 36px;
-        text-align: center;
-        background: var(--card);
-        border: 1px solid var(--card-border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-        opacity: 0;
-        transform: translateY(20px) scale(0.97);
-        transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
-        pointer-events: none;
-        -webkit-backdrop-filter: blur(14px);
-        backdrop-filter: blur(14px);
-      }
-      .t-card.active {
-        position: relative;
-        opacity: 1;
-        transform: none;
-        pointer-events: auto;
-      }
-      .quote {
-        font-size: 32px;
-        color: var(--primary);
-        opacity: 0.6;
-        margin-bottom: 14px;
-      }
-      .t-card p {
-        font-size: 17px;
-        line-height: 1.8;
-        color: var(--text);
-        margin: 0 0 22px;
-        font-style: italic;
-      }
-      .author {
-        display: inline-flex;
-        align-items: center;
-        gap: 14px;
-      }
-      .avatar {
-        width: 56px;
-        height: 56px;
-        border-radius: 50%;
-        background: var(--gradient);
-        color: #fff;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 22px;
-      }
-      .author h4 {
-        margin: 0;
-        font-size: 15px;
-      }
-      .author small {
-        color: var(--text-muted);
-        font-size: 12px;
-      }
-
-      .controls {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 16px;
-        margin-top: 26px;
-      }
-      .controls button {
-        width: 42px;
-        height: 42px;
-        border-radius: 50%;
-        background: var(--card);
-        border: 1px solid var(--card-border);
-        color: var(--text);
-        transition: all var(--transition);
-      }
-      .controls button:hover {
-        background: var(--gradient);
-        color: #fff;
-        border-color: transparent;
-      }
-      .dots {
-        display: flex;
-        gap: 8px;
-      }
-      .dots span {
-        width: 9px;
-        height: 9px;
-        border-radius: 50%;
-        background: var(--card-border);
-        cursor: pointer;
-        transition: all var(--transition);
-      }
-      .dots span.active {
-        background: var(--gradient);
-        width: 26px;
-        border-radius: 99px;
-      }
-    `,
-  ],
+  imports: [CommonModule, ReactiveFormsModule, RevealDirective],
+  templateUrl: './testimonials.html',
+  styleUrl: './testimonials.scss',
 })
 export class TestimonialsComponent implements OnInit, OnDestroy {
-  private platformId = inject(PLATFORM_ID);
-  active = signal(0);
-  private timer?: number;
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly fb = inject(FormBuilder);
 
-  testimonials: Testimonial[] = [
+  readonly starList: readonly number[] = [1, 2, 3, 4, 5];
+
+  readonly active = signal(0);
+  readonly rating = signal(0);
+  readonly submitted = signal(false);
+  readonly visitorComments = signal<VisitorComment[]>([]);
+
+  private autoplayId?: number;
+  private successId?: number;
+
+  readonly form = this.fb.group({
+    name: ['', [Validators.required, Validators.minLength(2)]],
+    role: [''],
+    message: ['', [Validators.required, Validators.minLength(10)]],
+  });
+
+  readonly testimonials: Testimonial[] = [
     {
       name: 'Project Lead',
       role: 'Autovyn Consultancy Pvt. Ltd.',
@@ -193,16 +83,100 @@ export class TestimonialsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (!isPlatformBrowser(this.platformId)) return;
-    this.timer = window.setInterval(() => this.next(), 6000);
-  }
-  ngOnDestroy(): void {
-    if (this.timer) clearInterval(this.timer);
+    this.loadComments();
+    this.autoplayId = window.setInterval(() => this.next(), AUTOPLAY_MS);
   }
 
-  next() {
+  ngOnDestroy(): void {
+    if (this.autoplayId) clearInterval(this.autoplayId);
+    if (this.successId) clearTimeout(this.successId);
+  }
+
+  next(): void {
     this.active.update((v) => (v + 1) % this.testimonials.length);
   }
-  prev() {
-    this.active.update((v) => (v - 1 + this.testimonials.length) % this.testimonials.length);
+
+  prev(): void {
+    this.active.update(
+      (v) => (v - 1 + this.testimonials.length) % this.testimonials.length,
+    );
+  }
+
+  showErr(field: 'name' | 'message'): boolean {
+    const c = this.form.get(field);
+    return !!(c && c.invalid && (c.touched || c.dirty));
+  }
+
+  submit(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const { name, role, message } = this.form.value;
+    const comment: VisitorComment = {
+      id: this.uid(),
+      name: (name || '').trim(),
+      role: (role || '').trim(),
+      message: (message || '').trim(),
+      rating: this.rating(),
+      createdAt: Date.now(),
+    };
+    this.visitorComments.update((list) => [comment, ...list]);
+    this.saveComments();
+    this.form.reset({ name: '', role: '', message: '' });
+    this.rating.set(0);
+    this.submitted.set(true);
+    if (this.successId) clearTimeout(this.successId);
+    this.successId = window.setTimeout(
+      () => this.submitted.set(false),
+      SUCCESS_MS,
+    );
+  }
+
+  remove(id: string): void {
+    this.visitorComments.update((list) => list.filter((c) => c.id !== id));
+    this.saveComments();
+  }
+
+  initials(name: string): string {
+    return name
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((p) => p[0]?.toUpperCase() ?? '')
+      .join('');
+  }
+
+  formatDate(ts: number): string {
+    return new Date(ts).toLocaleString(undefined, {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+
+  private uid(): string {
+    return Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+  }
+
+  private loadComments(): void {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const parsed = JSON.parse(raw) as VisitorComment[];
+      if (Array.isArray(parsed)) this.visitorComments.set(parsed);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  private saveComments(): void {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(this.visitorComments()));
+    } catch {
+      /* ignore */
+    }
   }
 }

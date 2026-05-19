@@ -13,12 +13,7 @@ export class HeroComponent implements OnInit, OnDestroy {
 
   dots = Array.from({ length: 30 }, (_, i) => i);
   typed = signal('');
-  private roles = [
-    'Frontend Developer',
-    'Angular Specialist',
-    'CRM & Dashboard Engineer',
-    'UI Engineer',
-  ];
+  private roles = ['Frontend Developer', 'Angular Developer', 'UI Designer'];
   private roleIndex = 0;
   private charIndex = 0;
   private deleting = false;
