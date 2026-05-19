@@ -68,5 +68,72 @@
         </article>
       }
     </div>
+
+    <!-- Mobile-only 3-card peek carousel (<=691px) -->
+    <div
+      class="projects-carousel-mobile"
+      appReveal
+      role="region"
+      aria-roledescription="carousel"
+      aria-label="Featured projects"
+    >
+      <div class="pc-stage">
+        @for (p of visible(); track p.title; let i = $index) {
+          <article
+            class="pc-card"
+            [class]="'is-' + slidePosition(i)"
+            [attr.aria-hidden]="slidePosition(i) !== 'active'"
+          >
+            <div
+              class="pc-thumb"
+              [style.background]="'linear-gradient(135deg,' + p.colors[0] + ',' + p.colors[1] + ')'"
+            >
+              <i [class]="p.icon"></i>
+            </div>
+            <div class="pc-body">
+              <h4>{{ p.title }}</h4>
+              <p>{{ p.description }}</p>
+              <div class="pc-tags">
+                @for (t of p.tags; track t) {
+                  <span>{{ t }}</span>
+                }
+              </div>
+              <div class="pc-actions">
+                <a
+                  class="btn btn-primary"
+                  [href]="p.live"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <i class="fa-solid fa-play"></i> Live Demo
+                </a>
+                <a class="btn" [href]="p.github" target="_blank" rel="noopener noreferrer">
+                  <i class="fa-brands fa-github"></i> Code
+                </a>
+              </div>
+            </div>
+          </article>
+        }
+      </div>
+
+      <div class="pc-dots">
+        @for (p of visible(); track p.title; let i = $index) {
+          <span
+            [class.active]="i === carouselIndex()"
+            (click)="goToSlide(i)"
+            [attr.aria-label]="'Go to slide ' + (i + 1)"
+          ></span>
+        }
+      </div>
+
+      <div class="pc-arrows">
+        <button (click)="prevSlide()" aria-label="Previous" title="Previous">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <button (click)="nextSlide()" aria-label="Next" title="Next">
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
   </div>
 </section>

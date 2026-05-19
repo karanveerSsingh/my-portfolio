@@ -17,11 +17,21 @@
             <span class="period"> <i class="fa-regular fa-calendar"></i> {{ item.period }} </span>
             <h4>{{ item.role }}</h4>
             <p class="company"><i class="fa-solid fa-building"></i> {{ item.company }}</p>
-            <ul>
-              @for (r of item.responsibilities; track r) {
-                <li><i class="fa-solid fa-check"></i> {{ r }}</li>
+            <ul [class.expanded]="isExpanded(item.company)">
+              @for (r of item.responsibilities; track r; let idx = $index) {
+                <li [class.hidden]="!isExpanded(item.company) && idx > 0">
+                  <i class="fa-solid fa-check"></i>
+                  <span class="resp-text" [class.clamp]="!isExpanded(item.company)">
+                    {{ r }}
+                  </span>
+                </li>
               }
             </ul>
+            @if (item.responsibilities.length > 1) {
+              <button type="button" class="read-toggle" (click)="toggle(item.company)">
+                {{ isExpanded(item.company) ? 'Read less' : 'Read more' }}
+              </button>
+            }
           </div>
         </div>
       }

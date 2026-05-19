@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RevealDirective } from '../../../../shared/directives/reveal.directive';
 
@@ -18,6 +18,19 @@ interface ExperienceItem {
   styleUrl: './experience.scss',
 })
 export class ExperienceComponent {
+  private readonly expandedSet = signal<Set<string>>(new Set());
+
+  isExpanded(key: string): boolean {
+    return this.expandedSet().has(key);
+  }
+
+  toggle(key: string): void {
+    const s = new Set(this.expandedSet());
+    if (s.has(key)) s.delete(key);
+    else s.add(key);
+    this.expandedSet.set(s);
+  }
+
   readonly items: ExperienceItem[] = [
     {
       role: 'Frontend Developer',

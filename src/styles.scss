@@ -55,6 +55,20 @@ body {
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
   overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+  text-rendering: optimizeSpeed;
+}
+
+/* ===== iOS Safari performance optimizations =====
+   @supports (-webkit-touch-callout: none) targets iOS Safari only.
+   Android Chrome, desktop Chrome/Firefox/Edge are unaffected. */
+@supports (-webkit-touch-callout: none) {
+  html,
+  body {
+    /* Native momentum scrolling — much smoother than JS-driven smooth scroll */
+    scroll-behavior: auto;
+    -webkit-overflow-scrolling: touch;
+  }
 }
 
 a {
@@ -235,5 +249,74 @@ section {
 @media (max-width: 768px) {
   section {
     padding: 80px 0 50px;
+  }
+}
+
+/* ===== iOS Safari: lighten expensive effects =====
+   Removes/reduces backdrop-filter, large blur shapes, and pulse loops
+   that cause GPU hangs and scroll jank on iPhone. */
+@supports (-webkit-touch-callout: none) {
+  /* Glass cards: backdrop-filter is one of the heaviest GPU ops on iOS.
+     Replace with a slightly more opaque solid background for the same look. */
+  .card,
+  .skill-card,
+  .service-card,
+  .stats-grid,
+  .t-card,
+  .pc-card {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+
+  :root {
+    --card: rgba(255, 255, 255, 0.08);
+  }
+  :root[data-theme='light'] {
+    --card: rgba(255, 255, 255, 0.96);
+  }
+
+  /* Floating blurred blobs cause continuous repaints — pause on iOS */
+  .bg-shapes span,
+  .bg-shapes .shape {
+    animation: none !important;
+    filter: blur(40px) !important;
+    opacity: 0.3 !important;
+  }
+
+  /* Disable infinite pulse animations on iOS to stop ongoing compositor work */
+  @keyframes pulseGlow {
+    0%,
+    100% {
+      box-shadow: none;
+    }
+  }
+
+  /* Promote animated cards to their own GPU layer so transforms don't repaint siblings */
+  .t-card,
+  .pc-card,
+  .reveal {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  /* Reduce reveal animation duration on iOS for snappier feel */
+  .reveal {
+    transition:
+      opacity 0.45s ease,
+      transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* Respect users who prefer reduced motion (also helps iOS Low Power Mode) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

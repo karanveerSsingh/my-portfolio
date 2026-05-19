@@ -2,11 +2,22 @@
 
 .hero {
   min-height: 100vh;
+  min-height: 100dvh; /* dynamic viewport — no URL-bar resize jank on iOS */
   display: flex;
   align-items: center;
   padding: 140px 0 80px;
   position: relative;
   overflow: hidden;
+}
+
+/* iOS: stop the heavy 80px-blur floating shapes from repainting forever. */
+@supports (-webkit-touch-callout: none) {
+  .hero .bg-shapes .shape {
+    animation: none !important;
+    filter: blur(45px) !important;
+    opacity: 0.35 !important;
+    will-change: auto;
+  }
 }
 
 .bg-shapes .shape {

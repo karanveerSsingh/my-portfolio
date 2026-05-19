@@ -1,5 +1,14 @@
-import { Component, computed, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {
+  Component,
+  OnDestroy,
+  OnInit,
+  PLATFORM_ID,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RevealDirective } from '../../../../shared/directives/reveal.directive';
 
 type ProjectCategory = 'all' | 'dashboard' | 'webapp' | 'crm';
@@ -20,6 +29,10 @@ interface Filter {
   label: string;
 }
 
+type CardPosition = 'active' | 'prev' | 'next' | 'hidden';
+
+const AUTOPLAY_MS = 10000;
+
 @Component({
   selector: 'app-projects',
   standalone: true,
@@ -27,7 +40,9 @@ interface Filter {
   templateUrl: './projects.html',
   styleUrl: './projects.scss',
 })
-export class ProjectsComponent {
+export class ProjectsComponent implements OnInit, OnDestroy {
+  private readonly platformId = inject(PLATFORM_ID);
+
   readonly filters: readonly Filter[] = [
     { id: 'all', label: 'All' },
     { id: 'crm', label: 'CRM' },
@@ -36,6 +51,9 @@ export class ProjectsComponent {
   ];
 
   readonly activeFilter = signal<ProjectCategory>('all');
+  readonly carouselIndex = signal(0);
+
+  private autoplayId?: number;
 
   readonly projects: Project[] = [
     {
@@ -111,7 +129,52 @@ export class ProjectsComponent {
     return f === 'all' ? this.projects : this.projects.filter((p) => p.category === f);
   });
 
+  constructor() {
+    // Reset carousel position whenever the visible set changes (filter switch).
+    effect(() => {
+      this.visible();
+      this.carouselIndex.set(0);
+    });
+  }
+
+  ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.autoplayId = window.setInterval(() => this.nextSlide(), AUTOPLAY_MS);
+  }
+
+  ngOnDestroy(): void {
+    if (this.autoplayId) clearInterval(this.autoplayId);
+  }
+
   setFilter(id: ProjectCategory): void {
     this.activeFilter.set(id);
+  }
+
+  nextSlide(): void {
+    const n = this.visible().length;
+    if (n === 0) return;
+    this.carouselIndex.update((v) => (v + 1) % n);
+  }
+
+  prevSlide(): void {
+    const n = this.visible().length;
+    if (n === 0) return;
+    this.carouselIndex.update((v) => (v - 1 + n) % n);
+  }
+
+  goToSlide(i: number): void {
+    this.carouselIndex.set(i);
+  }
+
+  /** Returns the layout position of a slide relative to the active index. */
+  slidePosition(i: number): CardPosition {
+    const a = this.carouselIndex();
+    const n = this.visible().length;
+    if (n === 0) return 'hidden';
+    const diff = (i - a + n) % n;
+    if (diff === 0) return 'active';
+    if (diff === 1) return 'next';
+    if (diff === n - 1) return 'prev';
+    return 'hidden';
   }
 }

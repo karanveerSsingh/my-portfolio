@@ -17,6 +17,24 @@
   }
 }
 
+/* iOS: fixed-position + backdrop-filter on a scroll-triggered element
+   is a known Safari perf killer. Use an opaque background instead. */
+@supports (-webkit-touch-callout: none) {
+  .navbar.scrolled {
+    background: color-mix(in srgb, var(--bg) 96%, transparent);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .nav-backdrop {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgba(2, 6, 23, 0.7);
+  }
+  .nav-links {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
 .nav-inner {
   display: flex;
   align-items: center;
